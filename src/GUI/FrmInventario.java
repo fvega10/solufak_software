@@ -1,0 +1,485 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package GUI;
+
+import BaseDeDatos.ConsultasSQLTablaArticulo;
+import BaseDeDatos.ConsultasSQLTablaCategoria;
+import BaseDeDatos.ConsultasSQLTablaInventario;
+import baseDatos.ConexionBaseDatos;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import logica.Articulo;
+import logica.Inventario;
+import sun.java2d.cmm.ColorTransform;
+
+/**
+ *
+ * @author Fabricio
+ */
+public class FrmInventario extends javax.swing.JDialog {
+    private ConexionBaseDatos conexion;
+    private boolean aceptar;
+    private String[][] datos;
+    private Articulo oArticulo;
+    private ArrayList articulos;
+    private ArrayList inventarioArticulo;
+    private int fila;
+    
+    /**
+     * Creates new form frmInventario
+     */
+    public FrmInventario(java.awt.Frame parent, boolean modal, ConexionBaseDatos PConexion) {
+        super(parent, modal);
+        initComponents();
+        this.setMinimumSize(new Dimension(969, 537));
+        this.setLocationRelativeTo(null);
+        this.conexion = PConexion;
+        this.aceptar = false;
+        this.datos = new String[0][6];
+        this.modelo.setDataVector(datos, cabecerasArticulo);
+        this.panel.setModel(modelo);
+        this.cargarDatosArticulos();
+    }
+    
+    /**
+     * Cabecera del Panel correspondiente a la tabla Dueño
+     * @return un arreglo con la cabecera correspondiente a cada tabla de la base de datos
+     */
+    private String[] cabecerasArticulo = {"Código movimiento", "Descripción", "Tipo de Movimiento", "Cantidad Ingresos", "Cantidad Salida", "Existencias"};
+    
+    /**
+     * El que asigna los datos al panel en el frame según los datos(matriz) y su cabecera(arreglo)
+     */
+    private DefaultTableModel modelo = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    
+    /**
+     * Redimensiona el Panel según los datos de la tabla
+     */
+    private void redimensionarMatriz() {
+        String[][] respaldo = this.datos;   // Respalda los datos de la matriz principal en una auxiliar
+
+        this.datos = new String[respaldo.length + 1][6]; // Inicializa la matriz sumandole un fila adicional, con la cantidad de columnas asginadas por parámetros
+        
+        // Permite redimensionar la matrix con los datos de la matrix auxiliar más la columna nueva sin datos
+        for (int i = 0; i < respaldo.length; i++) {
+            for (int j = 0; j < respaldo[0].length; j++) {
+                this.datos[i][j] = respaldo[i][j];  // Vuelve agregar los datos de la matrix auxiliar para no perder ningúna datos
+            }
+        }
+    }
+    
+    public boolean isAceptar(){
+        return this.aceptar;
+    }
+    
+    public Articulo getArticulo(){
+        double costo = Double.parseDouble(this.datos[fila][2]);
+        double porcentaje = Double.parseDouble(this.datos[fila][3]);
+        double precio_venta = Double.parseDouble(this.datos[fila][4]);
+//        oArticulo = new Articulo(this.datos[fila][0], this.datos[fila][1], costo, porcentaje, precio_venta);
+        return oArticulo;
+    }
+    
+    public void cargarDatosArticulos(){
+        ConsultasSQLTablaInventario oA = new ConsultasSQLTablaInventario(conexion);
+        inventarioArticulo = oA.obtenerInventario();
+        if(!oA.isError()){
+            if(inventarioArticulo.size()>0){
+                for(int i = 0; i < articulos.size(); i++){
+                    Inventario oArt = (Inventario)inventarioArticulo.get(i);
+                    articulos.add(oArt.getArticulo());
+                    this.redimensionarMatriz();
+                    
+                    this.datos[this.datos.length - 1][0] = oArt.getCod_inventario();
+                    this.datos[this.datos.length - 1][1] = oArt.getArticulo().getDescripcion();
+                    this.datos[this.datos.length - 1][2] = oArt.getTipo_movimiento();
+                    this.datos[this.datos.length - 1][3] = String.valueOf(oArt.getIngresos());
+                    this.datos[this.datos.length - 1][4] = String.valueOf(oArt.getSalidas());
+                    this.datos[this.datos.length - 1][5] = String.valueOf(oArt.getCantidad_final());
+                }
+                this.modelo.setDataVector(datos, cabecerasArticulo); // Se prepara el panel con los datos y cabecera determinados
+                this.panel.setModel(modelo);
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Ocurrió un error inesperado");
+        }
+    }
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JSeparator();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        panel = new javax.swing.JTable();
+        btnNuevoArticulo = new javax.swing.JButton();
+        btnNuevoIngreso = new javax.swing.JButton();
+        btnNuevaSalida = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        btnModificar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jSeparator5 = new javax.swing.JSeparator();
+        jSeparator6 = new javax.swing.JSeparator();
+        menu = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        mnSalir = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        mnNuevoArticulo = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        mnModificar = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
+        mnAgregarCategoria = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenu4 = new javax.swing.JMenu();
+        mnNuevoIngreso = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        mnNuevaSalida = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenu2 = new javax.swing.JMenu();
+
+        jMenuItem1.setText("jMenuItem1");
+
+        jMenuItem3.setText("jMenuItem3");
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        jPanel1.setBackground(new java.awt.Color(153, 0, 0));
+
+        jLabel1.setFont(new java.awt.Font("Poiret One", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("INVENTARIO");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(jLabel1)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(0, 0, 949, 89);
+
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(panel);
+
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(26, 107, 897, 225);
+
+        btnNuevoArticulo.setFont(new java.awt.Font("Raleway", 1, 12)); // NOI18N
+        btnNuevoArticulo.setMnemonic('N');
+        btnNuevoArticulo.setText("Nuevo Artículo");
+        btnNuevoArticulo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoArticuloActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnNuevoArticulo);
+        btnNuevoArticulo.setBounds(30, 380, 140, 40);
+
+        btnNuevoIngreso.setFont(new java.awt.Font("Raleway", 1, 12)); // NOI18N
+        btnNuevoIngreso.setMnemonic('I');
+        btnNuevoIngreso.setText("Nuevo Ingreso");
+        btnNuevoIngreso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoIngresoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnNuevoIngreso);
+        btnNuevoIngreso.setBounds(620, 380, 140, 40);
+
+        btnNuevaSalida.setFont(new java.awt.Font("Raleway", 1, 12)); // NOI18N
+        btnNuevaSalida.setMnemonic('S');
+        btnNuevaSalida.setText("Nueva Salida");
+        btnNuevaSalida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaSalidaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnNuevaSalida);
+        btnNuevaSalida.setBounds(780, 380, 140, 40);
+
+        jLabel2.setForeground(new java.awt.Color(153, 153, 153));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Solufak Software | Version 1.0.0.0");
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(0, 461, 949, 14);
+
+        btnModificar.setFont(new java.awt.Font("Raleway", 1, 12)); // NOI18N
+        btnModificar.setMnemonic('A');
+        btnModificar.setText("Modificar Artículo");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnModificar);
+        btnModificar.setBounds(190, 380, 140, 40);
+
+        jLabel3.setFont(new java.awt.Font("Raleway", 1, 14)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Inventario");
+        getContentPane().add(jLabel3);
+        jLabel3.setBounds(620, 340, 300, 18);
+
+        jLabel4.setFont(new java.awt.Font("Raleway", 1, 14)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("Artículo");
+        getContentPane().add(jLabel4);
+        jLabel4.setBounds(30, 340, 300, 18);
+        getContentPane().add(jSeparator5);
+        jSeparator5.setBounds(30, 360, 298, 10);
+        getContentPane().add(jSeparator6);
+        jSeparator6.setBounds(620, 360, 298, 10);
+
+        jMenu1.setText("Archivo");
+
+        mnSalir.setText("Salir");
+        jMenu1.add(mnSalir);
+
+        menu.add(jMenu1);
+
+        jMenu3.setText("Artículo");
+
+        mnNuevoArticulo.setText("Nuevo artículo          Alt + N");
+        mnNuevoArticulo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnNuevoArticuloActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnNuevoArticulo);
+        jMenu3.add(jSeparator1);
+
+        mnModificar.setText("Modificar Artículo    Alt + A");
+        mnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnModificarActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnModificar);
+        jMenu3.add(jSeparator8);
+
+        mnAgregarCategoria.setText("Agregar Categoría");
+        mnAgregarCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnAgregarCategoriaActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mnAgregarCategoria);
+        jMenu3.add(jSeparator4);
+
+        menu.add(jMenu3);
+
+        jMenu4.setText("Procesos");
+
+        mnNuevoIngreso.setText("Nuevo Ingreso   Alt + I");
+        mnNuevoIngreso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnNuevoIngresoActionPerformed(evt);
+            }
+        });
+        jMenu4.add(mnNuevoIngreso);
+        jMenu4.add(jSeparator2);
+
+        mnNuevaSalida.setText("Nueva Salida      Alt + S");
+        mnNuevaSalida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnNuevaSalidaActionPerformed(evt);
+            }
+        });
+        jMenu4.add(mnNuevaSalida);
+        jMenu4.add(jSeparator3);
+
+        menu.add(jMenu4);
+
+        jMenu2.setText("Reportes");
+        menu.add(jMenu2);
+
+        setJMenuBar(menu);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+    
+    public void agregarArticulo(){
+        FrmAgregarOModificarArticulo oA = new FrmAgregarOModificarArticulo(null, true, conexion);
+        oA.setVisible(true);
+        if(oA.isAceptar()){
+            ConsultasSQLTablaArticulo oC = new ConsultasSQLTablaArticulo(conexion);
+            oC.agregarArticulo(oA.getArticulo());
+            if(!oC.isError()){
+                JOptionPane.showMessageDialog(rootPane, "Artículo agregado satisfactoriamente");
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "Ocurrió un error en el registro");
+            }
+        }
+    }
+    
+    public void modificarArticulo(){
+        int fila_seleccionada;
+        boolean continuar = false;
+        Articulo aux = null;
+        if(this.panel.getSelectedRow() >=0){
+            fila_seleccionada = this.panel.getSelectedRow();
+            aux = (Articulo)articulos.get(fila_seleccionada);
+            FrmAgregarOModificarArticulo oM = new FrmAgregarOModificarArticulo(null, true, conexion, aux);
+            oM.setArticulo();
+            oM.setVisible(true);
+            if(oM.isAceptar()){
+                JOptionPane.showMessageDialog(rootPane, "Registro modificado correctamente");
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "No se modificó el registro, ocurrió un error");
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Debe seleccionar al menos una fila");
+        }
+    }
+    
+    public void nuevoIngreso(){
+        FrmInventarioNuevoIngreso oNI = new FrmInventarioNuevoIngreso(null, true, conexion);
+        oNI.setVisible(true);
+        if(oNI.isAceptar()){
+            this.cargarDatosArticulos();
+        }
+    }
+    
+    public void nuevaSalida(){
+        FrmInventarioNuevaSalida oNS = new FrmInventarioNuevaSalida(null, true, conexion);
+        oNS.setVisible(true);
+        if(oNS.isAceptar()){
+            this.cargarDatosArticulos();
+        }
+    }
+    
+    private void btnNuevoArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoArticuloActionPerformed
+        // TODO add your handling code here:
+        this.agregarArticulo();
+    }//GEN-LAST:event_btnNuevoArticuloActionPerformed
+
+    private void btnNuevoIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoIngresoActionPerformed
+        // TODO add your handling code here:
+        this.nuevoIngreso();
+    }//GEN-LAST:event_btnNuevoIngresoActionPerformed
+
+    private void btnNuevaSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaSalidaActionPerformed
+        // TODO add your handling code here:
+        this.nuevaSalida();
+    }//GEN-LAST:event_btnNuevaSalidaActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        // TODO add your handling code here:
+//        this.modificarArticulo();
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void panelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelMouseClicked
+        // TODO add your handling code here:
+        if(evt.getClickCount() == 2){
+            if(this.panel.getSelectedRow() >=0){
+                fila = this.panel.getSelectedRow();
+                aceptar = true;
+                this.setVisible(false);
+            }
+        }
+    }//GEN-LAST:event_panelMouseClicked
+
+    private void mnNuevoArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnNuevoArticuloActionPerformed
+        // TODO add your handling code here:
+        this.agregarArticulo();
+    }//GEN-LAST:event_mnNuevoArticuloActionPerformed
+
+    private void mnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnModificarActionPerformed
+        // TODO add your handling code here:
+        this.modificarArticulo();
+    }//GEN-LAST:event_mnModificarActionPerformed
+
+    private void mnNuevoIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnNuevoIngresoActionPerformed
+        // TODO add your handling code here:
+        this.nuevoIngreso();
+    }//GEN-LAST:event_mnNuevoIngresoActionPerformed
+
+    private void mnNuevaSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnNuevaSalidaActionPerformed
+        // TODO add your handling code here:
+        this.nuevaSalida();
+    }//GEN-LAST:event_mnNuevaSalidaActionPerformed
+
+    private void mnAgregarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnAgregarCategoriaActionPerformed
+        // TODO add your handling code here:
+        FrmInsertarOModificarCategoria oF = new FrmInsertarOModificarCategoria(null, true);
+        oF.setVisible(true);
+        if(oF.isAceptar()){
+            ConsultasSQLTablaCategoria oC = new ConsultasSQLTablaCategoria(conexion);
+            oC.agregarCategoria(oF.getCategoria());
+            if(!oC.isError()){
+                JOptionPane.showMessageDialog(rootPane, "Registro agregado correctamente");
+            }else{
+                JOptionPane.showMessageDialog(rootPane, oC.getErrorMsg());
+            }
+        }
+    }//GEN-LAST:event_mnAgregarCategoriaActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnNuevaSalida;
+    private javax.swing.JButton btnNuevoArticulo;
+    private javax.swing.JButton btnNuevoIngreso;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
+    private javax.swing.JMenuBar menu;
+    private javax.swing.JMenuItem mnAgregarCategoria;
+    private javax.swing.JMenuItem mnModificar;
+    private javax.swing.JMenuItem mnNuevaSalida;
+    private javax.swing.JMenuItem mnNuevoArticulo;
+    private javax.swing.JMenuItem mnNuevoIngreso;
+    private javax.swing.JMenuItem mnSalir;
+    private javax.swing.JTable panel;
+    // End of variables declaration//GEN-END:variables
+}
